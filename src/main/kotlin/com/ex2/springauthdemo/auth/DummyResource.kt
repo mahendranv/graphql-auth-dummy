@@ -4,11 +4,11 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 
 @DgsComponent
-class DummyResource2 {
+class DummyResource {
 
     @VisitorOnly
     @DgsMutation
-    fun registerUser2(): String = "dummy-member-id"
+    fun registerUser(): String = "dummy-member-id"
 
     @BuyerOnly
     @DgsMutation

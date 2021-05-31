@@ -1,0 +1,11 @@
+type Mutation {
+
+    #     Visitor specific
+    registerUser: String
+
+    #    Buyer specific
+    placeOrder: String
+
+    #    Seller specific
+    addProduct: String
+}

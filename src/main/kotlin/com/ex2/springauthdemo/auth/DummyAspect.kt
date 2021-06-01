@@ -1,5 +1,7 @@
 package com.ex2.springauthdemo.auth
 
+import com.ex2.springauthdemo.auth.session.DummyRequestManager
+import com.ex2.springauthdemo.auth.session.Roles
 import graphql.GraphQLException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

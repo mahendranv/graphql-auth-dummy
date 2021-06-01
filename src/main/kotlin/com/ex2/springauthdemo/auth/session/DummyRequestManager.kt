@@ -1,7 +1,11 @@
-package com.ex2.springauthdemo.auth
+package com.ex2.springauthdemo.auth.session
 
+import graphql.GraphQLException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 import javax.servlet.http.HttpServletRequest
@@ -20,12 +24,21 @@ class DummyRequestManager {
         // Identify role
         val role = userService.identifyRole(token)
 
-        // attribute the request with session. This will be available throughout the session
-        request.setAttribute(
-            KEY_SESSION, DummySession(
-                role = role
+        if (role == null) {
+            throw HttpClientErrorException.create(
+                HttpStatus.UNAUTHORIZED,
+                "",
+                HttpHeaders.EMPTY,
+                ByteArray(0),
+                Charsets.UTF_8
             )
-        )
+        } else {
+            request.setAttribute(
+                KEY_SESSION, DummySession(
+                    role = role
+                )
+            )
+        }
     }
 
     // A non-null guaranteed session. Everyone has a role here.

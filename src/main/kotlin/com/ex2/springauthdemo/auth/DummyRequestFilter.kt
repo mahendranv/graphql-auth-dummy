@@ -1,7 +1,9 @@
 package com.ex2.springauthdemo.auth
 
+import com.ex2.springauthdemo.auth.session.DummyRequestManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -21,11 +23,14 @@ class DummyRequestFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        try {
+            // Feed the request to request manager for session preparation
+            requestManager.saveSession(request)
 
-        // Feed the request to request manager for session preparation
-        requestManager.saveSession(request)
-
-        // Resume with request
-        filterChain.doFilter(request, response)
+            // Resume with request
+            filterChain.doFilter(request, response)
+        } catch (e: HttpClientErrorException) {
+            response.sendError(e.rawStatusCode, e.statusText)
+        }
     }
 }

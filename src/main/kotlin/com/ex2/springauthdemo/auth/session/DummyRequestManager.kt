@@ -23,6 +23,7 @@ class DummyRequestManager {
 
     @Autowired
     @Qualifier("timeout")
+//    @Qualifier("extended")
 //    @Qualifier("fixed_time")
     private lateinit var tokenExpiryStrategy: SessionExpiryStrategy
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
-@Component
+@Component("fixed_time")
 class FixedLifeSpanStrategy : SessionExpiryStrategy {
 
     override fun isSessionExpired(token: SessionToken): Boolean {

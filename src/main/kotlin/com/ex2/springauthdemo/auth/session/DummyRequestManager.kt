@@ -1,7 +1,9 @@
 package com.ex2.springauthdemo.auth.session
 
 import com.ex2.springauthdemo.auth.session.expiry.FixedLifeSpanStrategy
+import com.ex2.springauthdemo.auth.session.expiry.SessionExpiryStrategy
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -20,7 +22,9 @@ class DummyRequestManager {
     private lateinit var tokenService: TokenService
 
     @Autowired
-    private lateinit var tokenExpiryStrategy: FixedLifeSpanStrategy
+    @Qualifier("timeout")
+//    @Qualifier("fixed_time")
+    private lateinit var tokenExpiryStrategy: SessionExpiryStrategy
 
     // Save the session info per request. Retrieve it throughout the request
     fun saveSession(request: HttpServletRequest) {

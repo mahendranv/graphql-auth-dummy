@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 @Component
-class FixedTimeStampStrategy : SessionExpiryStrategy {
+class FixedLifeSpanStrategy : SessionExpiryStrategy {
 
     override fun isSessionExpired(token: SessionToken): Boolean {
         val durationSinceLogin = ChronoUnit.SECONDS.between(

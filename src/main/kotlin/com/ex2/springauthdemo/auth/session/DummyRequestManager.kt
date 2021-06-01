@@ -55,7 +55,7 @@ class DummyRequestManager {
 
 
     private fun broadcastTokenWipe(token: String?) {
-        //TODO
+        tokenService.deleteToken(token)
     }
 
     private fun unauthorizedException() = HttpClientErrorException.create(

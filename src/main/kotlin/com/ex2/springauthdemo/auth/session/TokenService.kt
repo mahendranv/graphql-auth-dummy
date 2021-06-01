@@ -2,6 +2,7 @@ package com.ex2.springauthdemo.auth.session
 
 import org.springframework.stereotype.Service
 import java.time.OffsetDateTime
+import java.util.*
 
 @Service
 class TokenService {
@@ -15,13 +16,20 @@ class TokenService {
             SessionToken("token-seller", OffsetDateTime.now())
     }
 
-    // TODO createToken on Login
+    fun createToken() = SessionToken(
+        token = UUID.randomUUID().toString(),
+        created = OffsetDateTime.now()
+    )
 
     fun peekToken(token: String?): SessionToken? = store[token]
 
     fun updateLastAccessTime(token: String) {
         // TODO: Token not found in store - fishy!!
         store[token]?.lastAccess = OffsetDateTime.now()
+    }
+
+    fun deleteToken(token: String?) {
+        store.remove(token)
     }
 }
 

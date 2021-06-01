@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 @Service
 class DummyUserService {
 
-    val sessions = mapOf(
+    val role = mutableMapOf(
         "token-buyer" to Roles.BUYER,
         "token-seller" to Roles.SELLER,
         // Any other value will be identified as invalid session
@@ -15,7 +15,7 @@ class DummyUserService {
         return if (token == null)
             Roles.VISITOR
         else
-            sessions[token]
+            role[token]
     }
 }
 

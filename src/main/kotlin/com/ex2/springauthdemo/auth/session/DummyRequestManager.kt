@@ -1,6 +1,6 @@
 package com.ex2.springauthdemo.auth.session
 
-import graphql.GraphQLException
+import com.ex2.springauthdemo.auth.session.expiry.FixedTimeStampStrategy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -16,6 +16,12 @@ class DummyRequestManager {
     @Autowired
     private lateinit var userService: DummyUserService
 
+    @Autowired
+    private lateinit var tokenService: TokenService
+
+    @Autowired
+    private lateinit var tokenExpiryStrategy: FixedTimeStampStrategy
+
     // Save the session info per request. Retrieve it throughout the request
     fun saveSession(request: HttpServletRequest) {
         // Retrieve auth token from request - if any
@@ -23,23 +29,42 @@ class DummyRequestManager {
 
         // Identify role
         val role = userService.identifyRole(token)
-
         if (role == null) {
-            throw HttpClientErrorException.create(
-                HttpStatus.UNAUTHORIZED,
-                "",
-                HttpHeaders.EMPTY,
-                ByteArray(0),
-                Charsets.UTF_8
-            )
-        } else {
-            request.setAttribute(
-                KEY_SESSION, DummySession(
-                    role = role
-                )
-            )
+            broadcastTokenWipe(token)
+            throw unauthorizedException()
         }
+
+        // Handling users that need a session
+        if (role != Roles.VISITOR) {
+            val sessionToken = tokenService.peekToken(token)
+            if (sessionToken == null || tokenExpiryStrategy.isSessionExpired(sessionToken)) {
+                broadcastTokenWipe(token)
+                throw unauthorizedException()
+            }
+
+            // punch-in to the token service
+            tokenService.updateLastAccessTime(token!!)
+        }
+
+        request.setAttribute(
+            KEY_SESSION, DummySession(
+                role = role
+            )
+        )
     }
+
+
+    private fun broadcastTokenWipe(token: String?) {
+        //TODO
+    }
+
+    private fun unauthorizedException() = HttpClientErrorException.create(
+        HttpStatus.UNAUTHORIZED,
+        "",
+        HttpHeaders.EMPTY,
+        ByteArray(0),
+        Charsets.UTF_8
+    )
 
     // A non-null guaranteed session. Everyone has a role here.
     fun getSession(): DummySession {

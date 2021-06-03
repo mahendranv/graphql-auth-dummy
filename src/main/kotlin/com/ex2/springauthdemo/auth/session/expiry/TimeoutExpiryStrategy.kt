@@ -22,6 +22,7 @@ class TimeoutExpiryStrategy : SessionExpiryStrategy {
 
     companion object {
 
-        const val MAX_DURATION = 30
+        // Logout after 3 minutes of inactivity
+        const val MAX_DURATION = 3 * 60
     }
 }

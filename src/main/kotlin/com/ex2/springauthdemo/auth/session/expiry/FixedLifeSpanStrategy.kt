@@ -19,7 +19,8 @@ class FixedLifeSpanStrategy : SessionExpiryStrategy {
 
     companion object {
 
-        const val MAX_DURATION = 30
+        // 30 days fixed lifespan
+        const val MAX_DURATION = 30 * 24 * 60 * 60
 
     }
 }
